@@ -134,7 +134,6 @@ function App() {
   const [offline, setOffline] = useState(!navigator.onLine)
   const [query, setQuery] = useState('')
   const [, setUploading] = useState(false)
-  const [activeFilter, setActiveFilter] = useState('all')
   const [view, setView] = useState('list')
   const [showEdit, setShowEdit] = useState(false)
   // allCharacters holds the full API set; characters is filtered from it
@@ -154,9 +153,8 @@ function App() {
       c.type?.toLowerCase().includes(term) ||
       c.description?.toLowerCase().includes(term)
     )
-    if (activeFilter !== 'all') list = list.filter((c) => (c.category ?? 'character') === activeFilter)
     return list
-  }, [allCharacters, query, activeFilter])
+  }, [allCharacters, query])
 
   // fetchCharacters: loads ALL entries once (or on manual refresh).
   // On failure it uses the localStorage cache as the PWA offline fallback.
@@ -317,13 +315,6 @@ function App() {
     }
   }
 
-  const filterTabs = [
-    { key: 'all', label: 'All', icon: <IconGrid /> },
-    { key: 'character', label: 'Characters', icon: <IconUser /> },
-    { key: 'enemy', label: 'Enemies', icon: <IconTarget /> },
-    { key: 'boss', label: 'Bosses', icon: <IconCrown /> },
-  ]
-
   if (view === 'detail' && selectedCharacter) {
     const ch = selectedCharacter
     const hasStats = ch.stats && (ch.stats.hp || ch.stats.damage || ch.stats.defense)
@@ -346,7 +337,6 @@ function App() {
             <div className="detail-hero__text">
               {ch.type && <p className="detail-type">{ch.type.toUpperCase()}</p>}
               <h1 className="detail-name">{ch.name}</h1>
-              <p className="detail-desc">{ch.description}</p>
             </div>
           </div>
         </div>
@@ -459,7 +449,10 @@ function App() {
           )}
         </div>
         <div className="header-meta">
-          {offline && <span className="offline-badge">Offline · using cache</span>}
+          <span className={offline ? 'offline-badge' : 'online-badge'}>
+            <span className="status-dot" />
+            {offline ? 'Offline · cache' : 'Online'}
+          </span>
           {error && !offline && <span className="error-badge">{error}</span>}
           <button
             className="refresh-btn"
@@ -478,19 +471,6 @@ function App() {
       </header>
 
       <main className="list-main">
-        <div className="filter-tabs">
-          {filterTabs.map((tab) => (
-            <button
-              key={tab.key}
-              type="button"
-              className={`filter-tab ${activeFilter === tab.key ? 'filter-tab--active' : ''}`}
-              onClick={() => setActiveFilter(tab.key)}
-            >
-              {tab.icon}<span>{tab.label}</span>
-            </button>
-          ))}
-        </div>
-
         <p className="results-count">
           Found {visibleCharacters.length} {visibleCharacters.length === 1 ? 'entry' : 'entries'}
         </p>

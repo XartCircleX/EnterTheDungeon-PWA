@@ -141,14 +141,37 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 
 /*  Offline badge  */
-.offline-badge {
+.offline-badge,
+.online-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   margin-top: 0.4rem;
   font-size: 0.78rem;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+}
+.offline-badge {
   color: #f0b55e;
   background: rgba(240,181,94,0.1);
   border: 1px solid rgba(240,181,94,0.3);
-  border-radius: 999px;
-  padding: 0.25rem 0.75rem;
+}
+.online-badge {
+  color: #4ade80;
+  background: rgba(74,222,128,0.1);
+  border: 1px solid rgba(74,222,128,0.3);
+}
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.offline-badge .status-dot { background: #f0b55e; }
+.online-badge  .status-dot { background: #4ade80; animation: pulse-dot 2s infinite; }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
 }
 
 /*  MAIN LIST  */
