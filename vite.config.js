@@ -45,22 +45,8 @@ export default defineConfig({
         ]
       },
       workbox: {
-        runtimeCaching: [
-          {
-            urlPattern: /\/api\/characters\/?$/,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'characters-cache',
-              cacheableResponse: {
-                statuses: [0, 200]
-              },
-              expiration: {
-                maxEntries: 30,
-                maxAgeSeconds: 60 * 60
-              }
-            }
-          }
-        ]
+        navigateFallback: '/index.html',
+        runtimeCaching: []
       }
     })
   ]
