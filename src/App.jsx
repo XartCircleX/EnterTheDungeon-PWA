@@ -1,7 +1,7 @@
 ﻿import { useCallback, useEffect, useMemo, useState } from 'react'
 import './App.css'
 
-const API_URL = (import.meta.env.VITE_CHAR_API ?? '/api/characters').replace(/\/$/, '')
+const API_URL = (import.meta.env.VITE_CHAR_API ?? 'https://basic-api-wiki-hvdo.vercel.app/api/characters').replace(/\/$/, '')
 const CLOUDINARY_UPLOAD_URL = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
 const emptyForm = { name: '', description: '', image: '' }

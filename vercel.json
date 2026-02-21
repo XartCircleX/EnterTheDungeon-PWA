@@ -1,8 +1,5 @@
 {
   "rewrites": [
-    {
-      "source": "/api/characters/:path*",
-      "destination": "https://basic-api-wiki-hvdo.vercel.app/api/characters/:path*"
-    }
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
