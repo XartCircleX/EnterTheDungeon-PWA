@@ -63,6 +63,7 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/ssr(?:\/)?$/, /^\/api\//],
         runtimeCaching: [
           {
             urlPattern: ({ url, request }) => request.mode === 'navigate' && url.pathname === '/ssr',
