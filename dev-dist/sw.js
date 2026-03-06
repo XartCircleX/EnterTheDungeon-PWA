@@ -67,7 +67,7 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-2b7121c5'], (function (workbox) { 'use strict';
+define(['./workbox-bc76c691'], (function (workbox) { 'use strict';
 
   self.skipWaiting();
   workbox.clientsClaim();
@@ -78,20 +78,34 @@ define(['./workbox-2b7121c5'], (function (workbox) { 'use strict';
    * See https://goo.gl/S9QRab
    */
   workbox.precacheAndRoute([{
-    "url": "index.html",
-    "revision": "0.ag7660jlh8c"
+    "url": "/index.html",
+    "revision": "0.krmadb5l7i8"
   }], {});
   workbox.cleanupOutdatedCaches();
-  workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
+  workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("/index.html"), {
     allowlist: [/^\/$/]
   }));
-  workbox.registerRoute(/\/api\/characters\/?$/, new workbox.StaleWhileRevalidate({
-    "cacheName": "characters-cache",
-    plugins: [new workbox.CacheableResponsePlugin({
+  workbox.registerRoute(({
+    url,
+    request
+  }) => request.mode === "navigate" && url.pathname === "/ssr", new workbox.NetworkFirst({
+    "cacheName": "ssr-pages-cache",
+    "networkTimeoutSeconds": 3,
+    plugins: [new workbox.ExpirationPlugin({
+      maxEntries: 10,
+      maxAgeSeconds: 86400
+    })]
+  }), 'GET');
+  workbox.registerRoute(({
+    url
+  }) => url.pathname === "/api/characters", new workbox.NetworkFirst({
+    "cacheName": "characters-api-cache",
+    "networkTimeoutSeconds": 3,
+    plugins: [new workbox.ExpirationPlugin({
+      maxEntries: 20,
+      maxAgeSeconds: 86400
+    }), new workbox.CacheableResponsePlugin({
       statuses: [0, 200]
-    }), new workbox.ExpirationPlugin({
-      maxEntries: 30,
-      maxAgeSeconds: 3600
     })]
   }), 'GET');
 

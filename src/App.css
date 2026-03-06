@@ -3,6 +3,70 @@
 
 button { cursor: pointer; font-family: inherit; border: none; background: none; }
 
+/*  Launch splash  */
+.launch-splash {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 25%, rgba(201,150,62,0.22), transparent 55%),
+    linear-gradient(180deg, #080a12 0%, #0c0d14 100%);
+  color: #e8e8f0;
+  padding: 1.5rem;
+}
+
+.launch-splash__center {
+  text-align: center;
+  max-width: 560px;
+}
+
+.launch-splash__kicker {
+  margin: 0;
+  color: #8a8da8;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.launch-splash__title {
+  margin: 0.45rem 0 0;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  font-family: 'Cinzel', 'Georgia', serif;
+  color: #c9963e;
+  text-shadow: 0 0 30px rgba(201,150,62,0.32);
+}
+
+.launch-splash__subtitle {
+  margin: 0.85rem 0 1.2rem;
+  color: #a6a9c1;
+  font-size: 0.92rem;
+}
+
+.launch-splash__loader {
+  width: 180px;
+  max-width: 100%;
+  height: 4px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  overflow: hidden;
+  position: relative;
+}
+
+.launch-splash__loader::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(90deg, rgba(201,150,62,0.2), #c9963e);
+  animation: splash-loader 1.05s ease-in-out infinite;
+}
+
+@keyframes splash-loader {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(240%); }
+}
+
 /*  Page wrapper  */
 .page {
   min-height: 100vh;
@@ -113,6 +177,33 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   border: 1px solid rgba(255,90,90,0.25);
   border-radius: 999px;
   padding: 0.25rem 0.75rem;
+}
+
+.render-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  color: #7dd3fc;
+  background: rgba(125,211,252,0.12);
+  border: 1px solid rgba(125,211,252,0.35);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+}
+
+.render-link {
+  font-size: 0.78rem;
+  color: #d0d3e8;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  transition: all 140ms ease;
+}
+
+.render-link:hover {
+  color: #f2f3ff;
+  border-color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.06);
 }
 
 .refresh-btn {
@@ -333,6 +424,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

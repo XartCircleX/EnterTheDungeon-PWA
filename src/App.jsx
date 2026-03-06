@@ -4,6 +4,7 @@ import './App.css'
 const API_URL = (import.meta.env.VITE_CHAR_API ?? '/api/characters').replace(/\/$/, '')
 const CLOUDINARY_UPLOAD_URL = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+const SSR_PATH = import.meta.env.VITE_SSR_PATH ?? '/ssr'
 const emptyForm = { name: '', description: '', image: '' }
 const CACHE_KEY = 'characters-cache'
 
@@ -123,6 +124,19 @@ function StatBar({ icon, label, value, max = 600 }) {
   )
 }
 
+function LaunchSplash() {
+  return (
+    <div className="launch-splash" role="status" aria-live="polite">
+      <div className="launch-splash__center">
+        <p className="launch-splash__kicker">PWA Launch</p>
+        <h1 className="launch-splash__title">Enter the Dungeon</h1>
+        <p className="launch-splash__subtitle">Preparing archive and cached data...</p>
+        <div className="launch-splash__loader" aria-hidden="true" />
+      </div>
+    </div>
+  )
+}
+
 function App() {
   const [characters, setCharacters] = useState([])
   const [selectedId, setSelectedId] = useState(null)
@@ -136,8 +150,14 @@ function App() {
   const [, setUploading] = useState(false)
   const [view, setView] = useState('list')
   const [showEdit, setShowEdit] = useState(false)
+  const [showSplash, setShowSplash] = useState(true)
   // allCharacters holds the full API set; characters is filtered from it
   const [allCharacters, setAllCharacters] = useState([])
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setShowSplash(false), 1200)
+    return () => window.clearTimeout(timer)
+  }, [])
 
   const selectedCharacter = useMemo(
     () => characters.find((item) => item.id === selectedId) ?? null,
@@ -315,6 +335,10 @@ function App() {
     }
   }
 
+  if (showSplash) {
+    return <LaunchSplash />
+  }
+
   if (view === 'detail' && selectedCharacter) {
     const ch = selectedCharacter
     const hasStats = ch.stats && (ch.stats.hp || ch.stats.damage || ch.stats.defense)
@@ -449,6 +473,8 @@ function App() {
           )}
         </div>
         <div className="header-meta">
+          <span className="render-badge">CSR mode</span>
+          <a className="render-link" href={SSR_PATH}>Open SSR view</a>
           <span className={offline ? 'offline-badge' : 'online-badge'}>
             <span className="status-dot" />
             {offline ? 'Offline · cache' : 'Online'}

@@ -2,6 +2,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import { createSsrHtmlResponse } from './server/renderSsrPage.js'
 
 export default defineConfig({
   server: {
@@ -15,6 +16,22 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    {
+      name: 'local-ssr-route',
+      configureServer(server) {
+        server.middlewares.use(async (req, res, next) => {
+          const requestPath = req.url?.split('?')[0]
+          if (requestPath !== '/ssr') {
+            next()
+            return
+          }
+          const html = await createSsrHtmlResponse()
+          res.statusCode = 200
+          res.setHeader('Content-Type', 'text/html; charset=utf-8')
+          res.end(html)
+        })
+      },
+    },
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
@@ -46,7 +63,35 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: '/index.html',
-        runtimeCaching: []
+        runtimeCaching: [
+          {
+            urlPattern: ({ url, request }) => request.mode === 'navigate' && url.pathname === '/ssr',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'ssr-pages-cache',
+              networkTimeoutSeconds: 3,
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24,
+              },
+            },
+          },
+          {
+            urlPattern: ({ url }) => url.pathname === '/api/characters',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'characters-api-cache',
+              networkTimeoutSeconds: 3,
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          }
+        ]
       }
     })
   ]
